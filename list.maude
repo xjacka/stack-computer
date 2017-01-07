@@ -1,0 +1,41 @@
+load instrukce.maude
+
+fth TRIV is
+ sort Elt .
+endfth
+
+fmod SEQUENCE{X :: TRIV} is
+	sorts NeSequence{X} Sequence{X} .
+    subsort NeSequence{X} < Sequence{X} .
+    subsort X$Elt < NeSequence{X}.
+
+	op EOP : -> Sequence{X} [ctor] .
+	op _;_ : X$Elt Sequence{X} -> NeSequence{X} [ctor prec 4 id: EOP] .
+
+	var A : X$Elt .
+	var B : Sequence{X} .
+
+	op get_ : NeSequence{X} -> X$Elt .
+	eq get(A ; B) = A .
+
+    op del : NeSequence{X} -> Sequence{X} .
+    eq del(A ; B) = B .
+endfm
+
+view Instruction from TRIV to INSTRUCTION is
+ sort Elt to Instruction .
+endv
+
+fmod INPUT-SEQUENCE is
+	pr SEQUENCE{Nat} .
+endfm
+
+fmod INSTRUCTION-SEQUENCE is
+	pr SEQUENCE{Instruction} .
+endfm
+
+fmod OUTPUT-SEQUENCE is
+	pr SEQUENCE{Nat} .
+endfm
+
+*** red in INSTRUCTION-SEQUENCE : get (RD ; RD ; RD ; AD ; AD ; WR ; EOP) .

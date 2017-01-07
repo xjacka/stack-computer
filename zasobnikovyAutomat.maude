@@ -1,0 +1,88 @@
+load zasobnik.maude
+load pamet.maude
+load list.maude
+load instrukce.maude
+
+fmod AUTOMAT-STATE is
+
+	pr MEMORY .
+	pr OP-STACK .
+	pr INSTRUCTION-SEQUENCE .
+	pr INPUT-SEQUENCE .
+	pr OUTPUT-SEQUENCE .
+	pr INSTRUCTION .
+
+	sorts AutomatState .
+
+	op create(_,_,_,_,_) : Sequence{Instruction} Sequence{Nat} Sequence{Nat} Stack{Nat} Map{Nat, Int}
+		-> AutomatState [ctor prec 122] .
+
+    var S : Sequence{Instruction} .
+	var I : Sequence{Nat} .
+    var O : Sequence{Nat} .
+    var ST : Stack{Nat} .
+    var MEM : Map{Nat, Int} .
+	var Ins : Instruction .
+	var Inp : Nat .
+	vars a b : Nat .
+	var addr : Int .
+
+	op next(_) : AutomatState -> AutomatState .
+	eq next(create(EOP, I, O, ST, MEM)) = create(EOP, I, O, ST, MEM) .
+
+	eq next(create(RD ; S, Inp ; I, O, ST, MEM)) = next(create(S, I, O, push(Inp, ST), MEM)) .
+	eq next(create(WR ; S, I, O, ST, MEM)) = next(create(S, I, O ; top(ST), pop(ST), MEM)) .
+
+	eq next(create(AD ; S, I, O, push(a, push(b, ST)), MEM)) = next(create(S, I, O, push(a + b, ST), MEM)) .
+	eq next(create(SB ; S, I, O, push(a, push(b, ST)), MEM)) = next(create(S, I, O, push(a - b, ST), MEM)) .
+	eq next(create(MT ; S, I, O, push(a, push(b, ST)), MEM)) = next(create(S, I, O, push(a * b, ST), MEM)) .
+	eq next(create(DI ; S, I, O, push(a, push(b, ST)), MEM)) = next(create(S, I, O, push(a * b, ST), MEM)) . *** TODO
+
+	eq next(create(ST ; S, I, O, push(a, push(b, ST)), MEM)) = next(create(S, I, O, ST, insert(a, b, MEM))) .
+	eq next(create(DR ; S, I, O, push(a, ST), (a |-> b ,MEM))) = next(create(S, I, O, push(b, ST), MEM)) .
+
+	eq next(create((TA addr); S, I, O, ST, MEM)) = next(create(S, I, O, push(addr, ST), MEM)) .
+	eq next(create((TV addr); S, I, O, ST, MEM)) = next(create(S, I, O, push(addr, ST), MEM)) .
+
+	op instructions(_) : AutomatState -> Sequence{Instruction} .
+	eq instructions(create(S, I, O, ST, MEM)) = S .
+
+	op input(_) : AutomatState -> Sequence{Nat} .
+	eq input(create(S, I, O, ST, MEM)) = I .
+
+	op output(_) : AutomatState -> Sequence{Nat} .
+	eq output(create(S, I, O, ST, MEM)) = O .
+
+	op stack(_) : AutomatState -> Stack{Nat} .
+	eq stack(create(S, I, O, ST, MEM)) = ST .
+
+	op memory(_) : AutomatState -> Map{Nat, Int} .
+	eq memory(create(S, I, O, ST, MEM)) = MEM .
+
+endfm
+
+fmod AUTOMAT is
+	pr MEMORY .
+	pr OP-STACK .
+	pr INPUT-SEQUENCE .
+	pr INSTRUCTION-SEQUENCE .
+	pr OUTPUT-SEQUENCE .
+	pr AUTOMAT-STATE .
+
+
+	op run : Sequence{Instruction} Sequence{Nat} -> Sequence{Nat} .
+	op run-internal(_) : AutomatState -> AutomatState .
+
+	var S : Sequence{Instruction} .
+	var I : Sequence{Nat} .
+	var O : Sequence{Nat} .
+	var ST : Stack{Nat} .
+	var MEM : Map{Nat, Int} .
+
+	eq run(S, I) = output(run-internal(create(S, I, EOP, empty, empty))) .
+	eq run-internal(create(S, I, O, ST, MEM)) = next(create(S, I, O, ST, MEM)) .
+
+
+	op debug : Sequence{Instruction} Sequence{Nat} -> AutomatState .
+	eq debug(S, I) = run-internal(create(S, I, EOP, empty, empty)) .
+endfm

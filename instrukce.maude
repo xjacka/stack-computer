@@ -1,0 +1,27 @@
+fmod INSTRUCTION is
+	pr INT .
+	sorts Instruction ParametrizedInstruction .
+	subsort ParametrizedInstruction < Instruction .
+
+	op TA _ : Int -> ParametrizedInstruction [ctor prec 2] .
+	op TV _ : Int -> ParametrizedInstruction [ctor prec 2] .
+	op DR : -> Instruction [ctor] .
+	op ST : -> Instruction [ctor] .
+	op AD : -> Instruction [ctor] .
+	op SB : -> Instruction [ctor] .
+	op MT : -> Instruction [ctor] .
+	op DI : -> Instruction [ctor] .
+	op RD : -> Instruction [ctor] .
+	op WR : -> Instruction [ctor] .
+	op JU_ : Int -> ParametrizedInstruction [ctor prec 2] .
+	op JZ_ : Int -> ParametrizedInstruction [ctor prec 2] .
+
+	var A : Int .
+
+	op arg : ParametrizedInstruction -> Int .
+	eq arg(TA A) = A .
+	eq arg(TV A) = A .
+	eq arg(JU A) = A .
+	eq arg(JZ A) = A .
+
+endfm
