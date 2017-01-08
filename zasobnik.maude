@@ -1,26 +1,33 @@
 fth TRIV is
- sort Elt .
+	sort Elt .
 endfth
 
 fmod STACK{X :: TRIV} is
- sorts NeStack{X} Stack{X} .
- subsort NeStack{X} < Stack{X} .
+	sorts NeStack{X} Stack{X} .
+	subsort NeStack{X} < Stack{X} .
 
- op empty : -> Stack{X} [ctor] .
- op push : X$Elt Stack{X} -> NeStack{X} [ctor] .
- op pop : NeStack{X} -> Stack{X} .
- op top : NeStack{X} -> X$Elt .
- op isEmpty : Stack{X} -> Bool .
+	op empty : -> Stack{X} [ctor] .
+	op push : X$Elt Stack{X} -> NeStack{X} [ctor] .
+	op pop : NeStack{X} -> Stack{X} .
+	op top : NeStack{X} -> X$Elt .
+	op isEmpty : Stack{X} -> Bool .
 
- var S : Stack{X} .
- var E : X$Elt .
+	var S : Stack{X} .
+	var E : X$Elt .
 
- eq pop(push(E,S)) = S .
- eq top(push(E,S)) = E .
- eq isEmpty(empty) = true .
- eq isEmpty(push(E,S)) = false .
+	eq pop(push(E,S)) = S .
+	eq top(push(E,S)) = E .
+	eq isEmpty(empty) = true .
+	eq isEmpty(push(E,S)) = false .
 endfm
 
 fmod OP-STACK is
-  pr STACK{Nat} .
+	sorts Address Value .
+	subsort Address < Nat .
+	subsort Value < Nat .
+
+	op value(_) : Nat -> Value [ctor] .
+	op address(_) : Nat -> Address [ctor] .
+
+    pr STACK{Nat} .
 endfm

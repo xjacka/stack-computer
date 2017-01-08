@@ -1,7 +1,7 @@
 load instrukce.maude
 
 fth TRIV is
- sort Elt .
+	sort Elt .
 endfth
 
 fmod SEQUENCE{X :: TRIV} is
@@ -28,7 +28,6 @@ fmod ELEM is
 
 	sort Elem .
 
-	var Ins : Instruction .
 	op _:_ : Int Instruction -> Elem [ctor prec 3] .
 endfm
 
@@ -55,5 +54,3 @@ endfm
 fmod OUTPUT-SEQUENCE is
 	pr SEQUENCE{Nat} .
 endfm
-
-*** red in INSTRUCTION-SEQUENCE : get (RD ; RD ; RD ; AD ; AD ; WR ; EOP) .
