@@ -1,56 +1,24 @@
-load instrukce.maude
-
 fth TRIV is
 	sort Elt .
 endfth
 
-fmod SEQUENCE{X :: TRIV} is
-	sorts NeSequence{X} Sequence{X} .
-    subsort NeSequence{X} < Sequence{X} .
-    subsort X$Elt < NeSequence{X}.
+fmod LIST{X :: TRIV} is
+	sorts NeList{X} List{X} .
+    subsort NeList{X} < List{X} .
+    subsort X$Elt < NeList{X}.
 
-	op EOP : -> Sequence{X} [ctor] .
-	op _;_ : X$Elt Sequence{X} -> NeSequence{X} [ctor prec 4 id: EOP] .
-
-	var A : X$Elt .
-	var B : Sequence{X} .
-
-	op get_ : NeSequence{X} -> X$Elt .
-	eq get(A ; B) = A .
-
-    op del : NeSequence{X} -> Sequence{X} .
-    eq del(A ; B) = B .
+	op EOP : -> List{X} [ctor] .
+	op __ : X$Elt List{X} -> NeList{X} [ctor prec 3 id: EOP] .
 endfm
 
-fmod ELEM is
-	pr INSTRUCTION .
-	pr INT .
-
-	sort Elem .
-
-	op _:_ : Int Instruction -> Elem [ctor prec 3] .
-endfm
-
-view Instruction from TRIV to ELEM is
-    sort Elt to Elem .
+view Instruction from TRIV to INSTRUCTION is
+    sort Elt to Instruction .
 endv
 
-fmod INPUT-SEQUENCE is
-	pr SEQUENCE{Nat} .
+fmod INPUT-LIST is
+	pr LIST{Nat} .
 endfm
 
-fmod INSTRUCTION-SEQUENCE is
-	pr SEQUENCE{Instruction} .
-
-	var A : Instruction .
-	var El : Int .
-	var Lb : Int .
-	var B : Sequence{Instruction} .
-
-	op after(_,_) : Int Sequence{Instruction} -> Sequence{Instruction} .
-	eq after(El, (Lb : A) ; B) = if El == Lb then (Lb : A) ; B else after(El, B) fi .
-endfm
-
-fmod OUTPUT-SEQUENCE is
-	pr SEQUENCE{Nat} .
+fmod OUTPUT-LIST is
+	pr LIST{Nat} .
 endfm
