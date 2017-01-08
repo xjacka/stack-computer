@@ -22,8 +22,18 @@ fmod SEQUENCE{X :: TRIV} is
     eq del(A ; B) = B .
 endfm
 
-view Instruction from TRIV to INSTRUCTION is
- sort Elt to Instruction .
+fmod ELEM is
+	pr INSTRUCTION .
+	pr INT .
+
+	sort Elem .
+
+	var Ins : Instruction .
+	op _:_ : Int Instruction -> Elem [ctor prec 3] .
+endfm
+
+view Instruction from TRIV to ELEM is
+    sort Elt to Elem .
 endv
 
 fmod INPUT-SEQUENCE is
@@ -32,6 +42,14 @@ endfm
 
 fmod INSTRUCTION-SEQUENCE is
 	pr SEQUENCE{Instruction} .
+
+	var A : Instruction .
+	var El : Int .
+	var Lb : Int .
+	var B : Sequence{Instruction} .
+
+	op after(_,_) : Int Sequence{Instruction} -> Sequence{Instruction} .
+	eq after(El, (Lb : A) ; B) = if El == Lb then (Lb : A) ; B else after(El, B) fi .
 endfm
 
 fmod OUTPUT-SEQUENCE is

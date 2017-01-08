@@ -26,23 +26,29 @@ fmod AUTOMAT-STATE is
 	var Inp : Nat .
 	vars a b : Nat .
 	var addr : Int .
+	var Lb : Int .
 
 	op next(_) : AutomatState -> AutomatState .
 	eq next(create(EOP, I, O, ST, MEM)) = create(EOP, I, O, ST, MEM) .
 
-	eq next(create(RD ; S, Inp ; I, O, ST, MEM)) = next(create(S, I, O, push(Inp, ST), MEM)) .
-	eq next(create(WR ; S, I, O, ST, MEM)) = next(create(S, I, O ; top(ST), pop(ST), MEM)) .
+	eq next(create(Lb : RD ; S, Inp ; I, O, ST, MEM)) = next(create(S, I, O, push(Inp, ST), MEM)) .
+	eq next(create(Lb : WR ; S, I, O, ST, MEM)) = next(create(S, I, O ; top(ST), pop(ST), MEM)) .
 
-	eq next(create(AD ; S, I, O, push(a, push(b, ST)), MEM)) = next(create(S, I, O, push(a + b, ST), MEM)) .
-	eq next(create(SB ; S, I, O, push(a, push(b, ST)), MEM)) = next(create(S, I, O, push(a - b, ST), MEM)) .
-	eq next(create(MT ; S, I, O, push(a, push(b, ST)), MEM)) = next(create(S, I, O, push(a * b, ST), MEM)) .
-	eq next(create(DI ; S, I, O, push(a, push(b, ST)), MEM)) = next(create(S, I, O, push(a * b, ST), MEM)) . *** TODO
+	eq next(create(Lb : AD ; S, I, O, push(a, push(b, ST)), MEM)) = next(create(S, I, O, push(a + b, ST), MEM)) .
+	eq next(create(Lb : SB ; S, I, O, push(a, push(b, ST)), MEM)) = next(create(S, I, O, push(a - b, ST), MEM)) .
+	eq next(create(Lb : MT ; S, I, O, push(a, push(b, ST)), MEM)) = next(create(S, I, O, push(a * b, ST), MEM)) .
+	eq next(create(Lb : DI ; S, I, O, push(a, push(b, ST)), MEM)) = next(create(S, I, O, push(a * b, ST), MEM)) . *** TODO
 
-	eq next(create(ST ; S, I, O, push(a, push(b, ST)), MEM)) = next(create(S, I, O, ST, insert(a, b, MEM))) .
-	eq next(create(DR ; S, I, O, push(a, ST), (a |-> b ,MEM))) = next(create(S, I, O, push(b, ST), MEM)) .
+	eq next(create(Lb : ST ; S, I, O, push(a, push(b, ST)), MEM)) = next(create(S, I, O, ST, insert(a, b, MEM))) .
+	eq next(create(Lb : DR ; S, I, O, push(a, ST), (a |-> b ,MEM))) = next(create(S, I, O, push(b, ST), MEM)) .
 
-	eq next(create((TA addr); S, I, O, ST, MEM)) = next(create(S, I, O, push(addr, ST), MEM)) .
-	eq next(create((TV addr); S, I, O, ST, MEM)) = next(create(S, I, O, push(addr, ST), MEM)) .
+	eq next(create((Lb : TA addr); S, I, O, ST, MEM)) = next(create(S, I, O, push(addr, ST), MEM)) .
+	eq next(create((Lb : TV addr); S, I, O, ST, MEM)) = next(create(S, I, O, push(addr, ST), MEM)) .
+
+	eq next(create((Lb : JU addr); S, I, O, ST, MEM)) = next(create(after(addr, S), I, O, ST, MEM)) .
+	eq next(create((Lb : JZ addr); S, I, O, push(a, ST), MEM)) = if a == 0
+		then next(create(after(addr, S), I, O, ST, MEM))
+		else next(create(S, I, O, ST, MEM)) fi .
 
 	op instructions(_) : AutomatState -> Sequence{Instruction} .
 	eq instructions(create(S, I, O, ST, MEM)) = S .
@@ -62,13 +68,7 @@ fmod AUTOMAT-STATE is
 endfm
 
 fmod AUTOMAT is
-	pr MEMORY .
-	pr OP-STACK .
-	pr INPUT-SEQUENCE .
-	pr INSTRUCTION-SEQUENCE .
-	pr OUTPUT-SEQUENCE .
 	pr AUTOMAT-STATE .
-
 
 	op run : Sequence{Instruction} Sequence{Nat} -> Sequence{Nat} .
 	op run-internal(_) : AutomatState -> AutomatState .
@@ -82,7 +82,8 @@ fmod AUTOMAT is
 	eq run(S, I) = output(run-internal(create(S, I, EOP, empty, empty))) .
 	eq run-internal(create(S, I, O, ST, MEM)) = next(create(S, I, O, ST, MEM)) .
 
-
 	op debug : Sequence{Instruction} Sequence{Nat} -> AutomatState .
 	eq debug(S, I) = run-internal(create(S, I, EOP, empty, empty)) .
 endfm
+
+*** red in AUTOMAT : debug(0 : RD ; 0 : RD ; 0 : ST ; 0 : TA 1 ; 0 : DR ; 0 : WR, 31 ; 1) .
