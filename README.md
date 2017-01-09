@@ -1,5 +1,4 @@
 # stack-computer
-stack computer in maude
 
   * Zásobníkový počítač má paměť, zásobník, vstup a výstup.
   * Do paměti lze ukládat jako hodnoty celá čísla, paměť je adresována přirozenými čísly.
@@ -11,3 +10,8 @@ stack computer in maude
   I;P ... instrukce I za níž následuje program P
   
   n:P ... návěští n, kterým je označen program P
+
+## použití
+
+maude stackComputer.maude
+> red in AUTOMAT : run( TA 10 ; TV 15 ; ST ; RD ; TA 10 ; DR ; AD ; JU 5 ; WR ; RD ; 5 : WR ; EOP , 10 13) .
