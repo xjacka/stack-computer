@@ -15,21 +15,20 @@ fmod AUTOMAT-STATE is
 
 	sorts AutomatState .
 
-	op create(_,_,_,_,_) : Sequence List{Nat} List{Nat} Stack{Nat} Map{Nat, Int}
-		-> AutomatState [ctor prec 122] .
+	op create(_,_,_,_,_) : Sequence List{Nat} List{Nat} Stack{Nat} Map{Nat, Int} -> AutomatState [ctor prec 122] .
 
     var S : Sequence .
 	var I : List{Nat} .
     var O : List{Nat} .
     var ST : Stack{Nat} .
     var MEM : Map{Nat, Int} .
-	var Ins : Instruction .
 	var Inp : Nat .
 	vars a b : Nat .
 	var addr : Nat .
 	var Lb : Int .
 
 	op next(_) : AutomatState -> AutomatState .
+
 	eq next(create(EOP, I, O, ST, MEM)) = create(EOP, I, O, ST, MEM) .
 	eq next(create(Lb : EOP, I, O, ST, MEM)) = create(EOP, I, O, ST, MEM) .
 
@@ -44,8 +43,6 @@ fmod AUTOMAT-STATE is
 	eq next(create(Lb : SB ; S, I, O, push(value(a), push(value(b), ST)), MEM)) = next(create(S, I, O, push(value(a - b), ST), MEM)) .
 	eq next(create(MT ; S, I, O, push(value(a), push(value(b), ST)), MEM)) = next(create(S, I, O, push(value(a * b), ST), MEM)) .
 	eq next(create(Lb : MT ; S, I, O, push(value(a), push(value(b), ST)), MEM)) = next(create(S, I, O, push(value(a * b), ST), MEM)) .
-	eq next(create(DI ; S, I, O, push(value(a), push(value(b), ST)), MEM)) = next(create(S, I, O, push(value(a * b), ST), MEM)) . *** TODO
-	eq next(create(Lb : DI ; S, I, O, push(value(a), push(value(b), ST)), MEM)) = next(create(S, I, O, push(value(a * b), ST), MEM)) . *** TODO
 
 	eq next(create(ST ; S, I, O, push(value(a), push(address(b), ST)), MEM)) = next(create(S, I, O, ST, insert(b, a, MEM))) .
 	eq next(create(Lb : ST ; S, I, O, push(value(a), push(address(b), ST)), MEM)) = next(create(S, I, O, ST, insert(b, a, MEM))) .

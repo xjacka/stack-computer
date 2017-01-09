@@ -11,10 +11,6 @@ fmod LIST{X :: TRIV} is
 	op __ : X$Elt List{X} -> NeList{X} [ctor prec 3 id: EOP] .
 endfm
 
-view Instruction from TRIV to INSTRUCTION is
-    sort Elt to Instruction .
-endv
-
 fmod INPUT-LIST is
 	pr LIST{Nat} .
 endfm

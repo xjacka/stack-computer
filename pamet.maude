@@ -13,8 +13,7 @@ fmod MAP{X :: TRIV, Y :: TRIV} is
 
 	op _|->_ : X$Elt Y$Elt -> Entry{X,Y} [ctor] .
 	op empty : -> Map{X,Y} [ctor] .
-	op _,_ : Map{X,Y} Map{X,Y} -> Map{X,Y}
-	   [ctor assoc comm id: empty prec 121 format (d r os d)] .
+	op _,_ : Map{X,Y} Map{X,Y} -> Map{X,Y} [ctor assoc comm id: empty prec 121 format (d r os d)] .
 	op undefined : -> [Y$Elt] [ctor] .
 
 	var D : X$Elt .
@@ -35,8 +34,7 @@ fmod MAP{X :: TRIV, Y :: TRIV} is
 	eq $hasMapping(M, D) = false [owise] .
 
 	op _[_] : Map{X,Y} X$Elt -> [Y$Elt] [prec 23] .
-	eq (M, D |-> R)[D]
-	= if $hasMapping(M, D) then undefined else R fi .
+	eq (M, D |-> R)[D] = if $hasMapping(M, D) then undefined else R fi .
 	eq M[D] = undefined [owise] .
 endfm
 
