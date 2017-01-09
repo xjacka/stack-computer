@@ -12,9 +12,9 @@ fmod LIST{X :: TRIV} is
 endfm
 
 fmod INPUT-LIST is
-	pr LIST{Nat} .
+	pr LIST{Int} .
 endfm
 
 fmod OUTPUT-LIST is
-	pr LIST{Nat} .
+	pr LIST{Int} .
 endfm

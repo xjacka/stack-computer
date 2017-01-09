@@ -21,13 +21,24 @@ fmod STACK{X :: TRIV} is
 	eq isEmpty(push(E,S)) = false .
 endfm
 
+***view StackItem from TRIV to STACK-ITEM is
+***	sort Elt to StackItem .
+***endv
+***
+***fmod STACK-ITEM
+***	sort StackItem
+***	subsort StackItem < Int .
+***endfm
+
 fmod OP-STACK is
+	pr INT .
+***	pr STACK-ITEM .
 	sorts Address Value .
-	subsort Address < Nat .
-	subsort Value < Nat .
+	subsort Address < Int .
+	subsort Value < Int .
 
-	op value(_) : Nat -> Value [ctor] .
-	op address(_) : Nat -> Address [ctor] .
+	op value(_) : Int -> Value [ctor] .
+	op address(_) : Int -> Address [ctor] .
 
-    pr STACK{Nat} .
+    pr STACK{Int} .
 endfm

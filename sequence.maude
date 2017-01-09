@@ -1,4 +1,4 @@
-load instrukce.maude
+load instruction.maude
 
 fth TRIV is
 	sort Elt .

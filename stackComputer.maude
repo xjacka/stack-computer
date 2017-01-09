@@ -1,8 +1,8 @@
-load zasobnik.maude
-load pamet.maude
+load stack.maude
+load memory.maude
 load list.maude
 load sequence.maude
-load instrukce.maude
+load instruction.maude
 
 fmod AUTOMAT-STATE is
 
@@ -15,17 +15,17 @@ fmod AUTOMAT-STATE is
 
 	sorts AutomatState .
 
-	op create(_,_,_,_,_) : Sequence List{Nat} List{Nat} Stack{Nat} Map{Nat, Int} -> AutomatState [ctor prec 122] .
+	op create(_,_,_,_,_) : Sequence List{Int} List{Int} Stack{Int} Map{Nat, Int} -> AutomatState [ctor prec 122] .
 
     var S : Sequence .
-	var I : List{Nat} .
-    var O : List{Nat} .
-    var ST : Stack{Nat} .
+	var I : List{Int} .
+    var O : List{Int} .
+    var ST : Stack{Int} .
     var MEM : Map{Nat, Int} .
-	var Inp : Nat .
-	vars a b : Nat .
-	var addr : Nat .
-	var Lb : Int .
+	var Inp : Int . *** input
+	vars a b : Int .
+	var addr : Nat . *** address
+	var Lb : Nat . *** label
 
 	op next(_) : AutomatState -> AutomatState .
 
@@ -63,7 +63,7 @@ fmod AUTOMAT-STATE is
 		then next(create(after(addr, S), I, O, ST, MEM))
 		else next(create(S, I, O, ST, MEM)) fi .
 
-	op output(_) : AutomatState -> List{Nat} .
+	op output(_) : AutomatState -> List{Int} .
 	eq output(create(S, I, O, ST, MEM)) = O .
 
 endfm
@@ -71,19 +71,19 @@ endfm
 fmod AUTOMAT is
 	pr AUTOMAT-STATE .
 
-	op run : Sequence List{Nat} -> List{Nat} .
+	op run : Sequence List{Int} -> List{Int} .
 	op run-internal(_) : AutomatState -> AutomatState .
 
 	var S : Sequence .
-	var I : List{Nat} .
-	var O : List{Nat} .
-	var ST : Stack{Nat} .
+	var I : List{Int} .
+	var O : List{Int} .
+	var ST : Stack{Int} .
 	var MEM : Map{Nat, Int} .
 
 	eq run(S, I) = output(run-internal(create(S, I, EOP, empty, empty))) .
 	eq run-internal(create(S, I, O, ST, MEM)) = next(create(S, I, O, ST, MEM)) .
 
-	op debug : Sequence List{Nat} -> AutomatState .
+	op debug : Sequence List{Int} -> AutomatState .
 	eq debug(S, I) = run-internal(create(S, I, EOP, empty, empty)) .
 endfm
 

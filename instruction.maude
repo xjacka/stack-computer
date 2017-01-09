@@ -1,0 +1,18 @@
+fmod INSTRUCTION is
+	pr INT .
+	sorts Instruction ParametrizedInstruction .
+	subsort ParametrizedInstruction < Instruction .
+
+	op TA _ : Nat -> ParametrizedInstruction [ctor prec 2] . *** uloží adresu a na vrchol zásobníku
+	op TV _ : Int -> ParametrizedInstruction [ctor prec 2] . *** uloží hodnotu v na vrchol zásobníku
+	op DR : -> Instruction [ctor] . *** nahradí adresu na vrcholu zásobníku hodnotou na odpovídající adrese
+	op ST : -> Instruction [ctor] . *** uloží vrchol zásobníku na adresu, která je uložena pod vrcholem zásobníku a zkrátí zásobník o tyto položky
+	op AD : -> Instruction [ctor] . *** sečte dvě hodnoty na vrcholu zásobníku a nahradí je výsledkem operace (+)
+	op SB : -> Instruction [ctor] . *** odečte dvě hodnoty na vrcholu zásobníku a nahradí je výsledkem operace (-)
+	op MT : -> Instruction [ctor] . *** vynásobí dvě hodnoty na vrcholu zásobníku a nahradí je výsledkem operace (*)
+	op RD : -> Instruction [ctor] . *** přečte jednu hodnotu ze vstupu a uloží ji na vrchol zásobníku
+	op WR : -> Instruction [ctor] . *** zapíše hodnotu z vrcholu zásobníku na výstup a zkrátí zásobník
+	op JU _ : Nat -> ParametrizedInstruction [ctor prec 2] . *** skok na návěští n
+	op JZ _ : Nat -> ParametrizedInstruction [ctor prec 2] . *** skok na návěští n jestliže hodnota na vrcholu zásobníku je 0, zkrátí zásobník o hodnotu na vrcholu
+
+endfm
